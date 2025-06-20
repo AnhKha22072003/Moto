@@ -1,0 +1,46 @@
+# version: "3.8"
+services:
+  backend:
+    build: ./docker/php
+    container_name: laravel_app
+    volumes:
+      - ./backend:/var/www/html
+      - laravel_vendor:/var/www/html/vendor
+    links:
+      - redis
+      - mysql
+    ports:
+      - 18080:80
+    depends_on:
+      - mysql
+    networks:
+      - app-network
+
+  # MySQL
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: laravel
+      MYSQL_USER: user
+      MYSQL_PASSWORD: secret
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - app-network
+
+  redis:
+    image: redis:latest
+  
+
+volumes:
+  mysql_data:
+  laravel_vendor:
+
+networks:
+  app-network:
+    driver: bridge
