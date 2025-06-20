@@ -1,10 +1,9 @@
-# version: "3.8"
 services:
   backend:
     build: ./docker/php
     container_name: laravel_app
     volumes:
-      - ./backend:/var/www/html
+      - ./:/var/www/html
       - laravel_vendor:/var/www/html/vendor
     links:
       - redis
