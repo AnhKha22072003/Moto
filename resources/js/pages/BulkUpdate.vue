@@ -149,6 +149,8 @@
 <script setup>
 import { ref, onMounted, watch } from "vue";
 import axios from "axios";
+import { useRoute, useRouter } from "vue-router";
+const route = useRoute();
 
 const motorcycles = ref([]);
 const selectedIds = ref([]);
@@ -240,7 +242,7 @@ const submit = async () => {
                 headers: { Authorization: `Bearer ${token}` },
             }
         );
-        window.location.href = "/motorcycles-view";
+        router.push("/motorcycles-view");
     } catch (err) {
         alert(err.response?.data?.message || "Lỗi cập nhật");
     }

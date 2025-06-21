@@ -14,9 +14,13 @@ return new class extends Migration
     public function up()
     {
         Schema::create('model', function (Blueprint $table) {
-           $table->increments('code');
-            $table->string('name');
-            $table->timestamps();
+          $table->increments('code'); 
+        $table->string('name');
+
+        $table->unsignedInteger('maker_code'); 
+        $table->foreign('maker_code')->references('code')->on('maker')->onDelete('cascade');
+
+        $table->timestamps();
         });
     }
 

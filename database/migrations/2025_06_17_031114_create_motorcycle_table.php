@@ -15,17 +15,17 @@ return new class extends Migration
     {
         Schema::create('motorcycle', function (Blueprint $table) {
             $table->id();
-            $table->integer('searchkey')->nullable(0);
+            $table->integer('searchkey')->nullable();
             $table->unsignedInteger('maker_code');
             $table->foreign('maker_code')->references('code')->on('maker')->onDelete('cascade');
             $table->unsignedInteger('model_code');
             $table->foreign('model_code')->references('code')->on('model')->onDelete('cascade');
             $table->boolean('type')->nullable(false);
             $table->integer('ippan_kakaku')->nullable(0);
-            $table->tinyInteger('nensiki')->nullable(0);
+            $table->integer('nensiki')->nullable(0);
             $table->integer('soukou')->nullable(0);
             $table->integer('soukou_fumei_flg')->nullable(0);
-            $table->tinyInteger('haikiryo')->nullable(0);
+            $table->integer('haikiryo')->nullable(0);
             $table->string('color_code', 2)->nullable();
             $table->string('color', 64)->nullable();
             $table->integer('noridasi_kakaku')->nullable(0);
@@ -52,7 +52,7 @@ return new class extends Migration
             $table->string('photo10_pr', 64)->nullable();
             $table->string('grade', 255)->nullable();
             $table->string('shatai_bangou', 255)->nullable();
-            $table->tinyInteger('first_year_registration')->nullable(0);
+            $table->integer('first_year_registration')->nullable(0);
             $table->string('last_update_id', 20)->nullable();
             $table->timestamps();
         });

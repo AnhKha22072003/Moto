@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\ModelMotor;
 
 class Maker extends Model
 {
@@ -12,14 +13,13 @@ class Maker extends Model
     protected $primaryKey = 'code';
     protected $fillable = ['name'];
     public $timestamps = true;
-    // protected $casts = [
-    //     'code' => 'integer',
-    // ];
-    /**
-     * Get the motorcycles associated with the maker.
-     */
+  
     public function motorcycles()
     {
         return $this->hasMany(MotorCycle::class, 'maker_code', 'code');
+    }
+    public function models()
+    {
+        return $this->hasMany(ModelMotor::class, 'maker_code', 'code');
     }
 }

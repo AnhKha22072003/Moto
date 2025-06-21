@@ -61,7 +61,7 @@ class MotorCycle extends Model
     }
     public function model()
     {
-        return $this->belongsTo(_Model::class, 'model_code', 'code');
+        return $this->belongsTo(ModelMotor::class, 'model_code', 'code');
     }
     // scope for searching motorcycles
      public function scopeFilterMaker(Builder $query, $maker)

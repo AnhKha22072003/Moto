@@ -4,12 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreMotorCycleRequest;
 use App\Http\Requests\UpdateMotorCycleRequest;
-use App\Models\_Model;
 use App\Models\Maker;
+use App\Models\ModelMotor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Motorcycle;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 
@@ -19,8 +18,8 @@ class MotorcycleController extends Controller
     public function index(Request $request)
     {
         $query = Motorcycle::with(['maker', 'model'])
-            ->filterMaker($request->maker)
-            ->filterModel($request->model)
+            ->filterMaker($request->maker_code)
+            ->filterModel($request->model_code)
             ->filterNensiki($request->nensiki)
             ->filterMaxOdo($request->max_odo)
             ->filterMaxPrice($request->max_price)
@@ -33,13 +32,19 @@ class MotorcycleController extends Controller
         return Inertia::render('MotorcycleCreate');
     }
 
-    public function store(StoreMotorCycleRequest $request)
-    {
-        $data = $request->all();
-        $this->handleMotorcycleImages($data['images'] ?? [], $data);
-        return Motorcycle::create($data);
-    }
+  
+public function store(StoreMotorCycleRequest $request)
+{
+    $data = $request->all();
+    $this->handleMotorcycleImages($data['images'] ?? [], $data);
 
+    $motorcycle = Motorcycle::create($data);
+
+    return response()->json([
+        'message' => 'Tạo xe thành công',
+        'data' => $motorcycle,
+    ], 201); 
+}
     public function show($id)
     {
         return Motorcycle::findOrFail($id);
@@ -159,11 +164,11 @@ class MotorcycleController extends Controller
     {
         return   Maker::all();
     }
-    public function modelSelect()
-    {
-        return _Model::all();
-    }
 
+    public function getModelsByMaker($makerCode)
+    {
+        return ModelMotor::where('maker_code', $makerCode)->get();
+    }
 
     protected function handleMotorcycleImages(array $images, array &$updateData, Motorcycle $motorcycle = null): void
     {
@@ -224,7 +229,7 @@ class MotorcycleController extends Controller
                     ]);
                 }
 
-              
+
                 if ($file->getSize() >  1024 * 70) {
 
                     throw ValidationException::withMessages([
