@@ -1,20 +1,22 @@
 <template>
-    <div class="container py-4">
+    <div class="page-body">
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title">Cập nhật xe</h3>
             </div>
             <div class="card-body">
                 <form @submit.prevent="submitForm">
-                    <div class="row">
+                    <div class="row g-3">
                         <!-- Hãng xe -->
-                        <select v-model="form.maker_code" class="form-select" required>
-                            <option :value="null" disabled>Chọn hãng xe</option>
-                            <option v-for="maker in makers" :key="maker.code" :value="maker.code">
-                                {{ maker.name }}
-                            </option>
-                        </select>
-
+                        <div class="col-md-6">
+                            <select v-model="form.maker_code" class="form-select" required>
+                                <option :value="null" disabled>Chọn hãng xe</option>
+                                <option v-for="maker in makers" :key="maker.code" :value="maker.code">
+                                    {{ maker.name }}
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
                         <!-- Loại xe -->
                         <select v-model="form.model_code" class="form-select" required>
                             <option :value="null" disabled>Chọn loại xe</option>
@@ -22,16 +24,17 @@
                                 {{ model.name }}
                             </option>
                         </select>
-                        <div class="mb-3">
+                        </div>
+                        <div class="col-md-4">
                             <label class="form-label">Giá bán</label>
                             <input v-model="form.ippan_kakaku" type="number" class="form-control" />
                         </div>
 
-                        <div class="mb-3">
+                        <div class="col-md-4">
                             <label class="form-label">Giá lên sàn (tự động +15%)</label>
                             <input v-model="form.noridasi_kakaku" type="number" class="form-control" readonly />
                         </div>
-                        <div class="col-md-4 mb-3" v-for="(field, key) in fieldMap" :key="key">
+                        <div class="col-md-4" v-for="(field, key) in fieldMap" :key="key">
                             <label class="form-label">{{ field.label }}</label>
                             <input v-model="form[key]" :type="field.type" class="form-control" required />
                         </div>
@@ -80,17 +83,17 @@
                     </div>
 
                     <h4 class="mt-4">Ảnh (cố định 10 ảnh có thể kéo thả)</h4>
-                    <div class="col-12 mb-3">
-                        <draggable class="dragArea d-flex flex-wrap justify-content-start gap-3" :list="images"
+                    <div class="mt-4">
+                        <draggable tag="div" class="grid-image-wrapper"  :list="images"
                             @end="updateSlots">
-                            <div class="card" v-for="(element, index) in images" :key="index"
-                                style="width: 200px; flex: 0 0 auto">
+                            <div class="card h-100" v-for="(element, index) in images" :key="index"
+                                >
                                 <img v-if="element.file" :src="element.file
                                     ? getImageSrc(element)
                                     : '/images/default.png'
                                     " class="card-img-top rounded" style="height: 150px; object-fit: fill" />
                                 <img v-else :src="'/images/default.png'" style="height: 150px; object-fit: fill" />
-                                <div class="card-body p-2">
+                                <div class="card-body p-2 text-center">
                                     <label class="form-label d-block text-center">Ảnh {{ index + 1 }}</label>
 
                                     <button v-if="!element.file" class="btn btn-secondary btn-sm w-100 mb-2"
@@ -265,16 +268,35 @@ const submitForm = async () => {
             },
         });
         router.push("/motorcycles-view");
-    } catch (error: any) {
-        alert(error.response?.data?.message || "Lỗi khi gửi dữ liệu");
+    } catch (err: any) {
+        if (err.response?.status === 422 && err.response?.data?.errors) {
+            const validationErrors = err.response.data.errors;
+            let errorMessages: string[] = [];
+
+            for (const field in validationErrors) {
+                if (Array.isArray(validationErrors[field])) {
+                    errorMessages.push(...validationErrors[field]);
+                }
+            }
+
+            alert(errorMessages.join('\n'));
+        } else {
+            alert("Đã có lỗi xảy ra");
+        }
     }
 };
+const skipNextModelLoad = ref(false);
 watch(
     () => form.value.maker_code,
     async (makerCode) => {
-        form.value.model_code = null;
+        if (skipNextModelLoad.value) {
+            skipNextModelLoad.value = false;
+            return;
+        }
+
         if (!makerCode) {
             models.value = [];
+            form.value.model_code = null;
             return;
         }
 
@@ -283,12 +305,16 @@ watch(
                 headers: { Authorization: `Bearer ${token}` },
             });
             models.value = res.data;
+
+            const modelCodes = res.data.map((m: any) => m.code);
+            if (!modelCodes.includes(form.value.model_code)) {
+                form.value.model_code = null;
+            }
         } catch (error) {
             console.error("Không thể tải model theo maker:", error);
         }
     }
 );
-
 const fetchData = async () => {
     try {
         const resMakers = await axios.get("/api/motorcycles/maker-select", {
@@ -309,7 +335,24 @@ const fetchMotorcycle = async () => {
         });
 
         form.value = { ...form.value, ...res.data };
+        skipNextModelLoad.value = true;
+        form.value = { ...form.value, ...res.data };
 
+        // Gọi models theo maker_code như bạn đang làm
+        if (form.value.maker_code) {
+            try {
+                const modelRes = await axios.get(
+                    `/api/motorcycles/models/${form.value.maker_code}`,
+                    {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }
+                );
+                models.value = modelRes.data;
+            } catch (modelError) {
+                console.error("Không thể tải model theo maker:", modelError);
+            }
+        }
+        // ✅ Tải ảnh
         for (let i = 0; i < 10; i++) {
             const photo = res.data[`photo${i + 1}`];
             const title = res.data[`photo${i + 1}_pr`];
@@ -326,16 +369,13 @@ const fetchMotorcycle = async () => {
 };
 
 onMounted(async () => {
-    await fetchData();
-    await fetchMotorcycle();
+    await fetchData();           // Load makers
+    await fetchMotorcycle();     // Load xe => maker_code, model_code có sẵn
+    // → Khi maker_code được gán, watcher sẽ tự gọi API models
 });
 </script>
 
 <style scoped>
-.card-img-top {
-    height: 120px;
-    object-fit: cover;
-}
 
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
@@ -346,5 +386,23 @@ input::-webkit-inner-spin-button {
 /* Firefox */
 input[type="number"] {
     -moz-appearance: textfield;
+}
+.grid-image-wrapper {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(2, 1fr);
+    /* default: mobile */
+}
+
+@media (min-width: 768px) {
+    .grid-image-wrapper {
+        grid-template-columns: repeat(5, 1fr);
+        /* desktop: 5 ảnh / hàng */
+    }
+}
+
+.card-img-top {
+    height: 150px;
+    object-fit: cover;
 }
 </style>

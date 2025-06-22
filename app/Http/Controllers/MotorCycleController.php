@@ -18,33 +18,35 @@ class MotorcycleController extends Controller
     public function index(Request $request)
     {
         $query = Motorcycle::with(['maker', 'model'])
-            ->filterMaker($request->maker_code)
-            ->filterModel($request->model_code)
+            ->filterMaker($request->maker)
+            ->filterModel($request->model)
             ->filterNensiki($request->nensiki)
             ->filterMaxOdo($request->max_odo)
             ->filterMaxPrice($request->max_price)
             ->sortByField($request->sort_by, $request->sort_order);
 
-        return $query->paginate($request->per_page ?? 10);
+        $motorcycles = $query->paginate($request->per_page ?? 10);
+        return response()->json($motorcycles);
+        
     }
     public function create()
     {
         return Inertia::render('MotorcycleCreate');
     }
 
-  
-public function store(StoreMotorCycleRequest $request)
-{
-    $data = $request->all();
-    $this->handleMotorcycleImages($data['images'] ?? [], $data);
 
-    $motorcycle = Motorcycle::create($data);
+    public function store(StoreMotorCycleRequest $request)
+    {
+        $data = $request->all();
+        $this->handleMotorcycleImages($data['images'] ?? [], $data);
 
-    return response()->json([
-        'message' => 'Tạo xe thành công',
-        'data' => $motorcycle,
-    ], 201); 
-}
+        $motorcycle = Motorcycle::create($data);
+
+        return response()->json([
+            'message' => 'Tạo xe thành công',
+            'data' => $motorcycle,
+        ], 201);
+    }
     public function show($id)
     {
         return Motorcycle::findOrFail($id);
@@ -120,7 +122,7 @@ public function store(StoreMotorCycleRequest $request)
                 'color',
                 'iyoukyo',
                 'noridasi_kakaku',
-                'photo1',
+               
             ];
 
             $missingFields = [];

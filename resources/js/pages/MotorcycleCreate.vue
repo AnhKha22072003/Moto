@@ -1,135 +1,124 @@
 <template>
-    <div class="container py-4">
+    <div class="page-body">
         <div class="card">
             <div class="card-header">
                 <h3 class="card-title">Tạo xe mới</h3>
             </div>
             <div class="card-body">
-                <form @submit.prevent="submitForm">
-                    <div class="row">
+                <form @submit.prevent="submitForm" class="space-y">
+                    <div class="row g-3">
                         <!-- Maker -->
-                        <select v-model="form.maker_code" class="form-select m-3" required>
-                            <option :value="null" disabled>Chọn hãng xe</option>
-                            <option v-for="maker in makers" :key="maker.code" :value="maker.code">
-                                {{ maker.name }}
-                            </option>
-                        </select>
-
-                        <!-- Model -->
-                        <select v-model="form.model_code" class="form-select m-3" required>
-                            <option :value="null" disabled>Chọn dòng xe</option>
-                            <option v-for="model in models" :key="model.code" :value="model.code">
-                                {{ model.name }}
-                            </option>
-                        </select>
-                        <div class="mb-3">
-                            <label class="form-label">Giá bán</label>
-                            <input v-model="form.ippan_kakaku" type="number" class="form-control" />
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Giá lên sàn (tự động +15%)</label>
-                            <input v-model="form.noridasi_kakaku" type="number" class="form-control" readonly />
-                        </div>
-                        <div class="col-md-4 mb-3" v-for="(field, key) in fieldMap" :key="key">
-                            <label class="form-label">{{ field.label }}</label>
-                            <input v-model="form[key]" :type="field.type" class="form-control"
-                                :required="field.required" />
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <label class="form-label">Dung tích xi lanh</label>
-                            <div class="input-group">
-                                <input v-model="form.haikiryo" type="number" class="form-control" required />
-                                <span class="input-group-text">cc</span>
-                            </div>
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <label class="form-label">Màu xe</label>
-                            <select v-model="form.color" class="form-select" required>
-                                <option :value="null" disabled selected>
-                                    Chọn màu xe
+                        <div class="col-md-6">
+                            <select v-model="form.maker_code" class="form-select" required>
+                                <option :value="null" disabled>Chọn hãng xe</option>
+                                <option v-for="maker in makers" :key="maker.code" :value="maker.code">
+                                    {{ maker.name }}
                                 </option>
-                                <option :value="'xanh'">Xanh</option>
-                                <option :value="'Đỏ'">Đỏ</option>
-                                <option :value="'Tím'">Tím</option>
                             </select>
                         </div>
-                        <div class="col-md-4 mb-3">
-                            <label class="form-label">Xác nhận ODO</label>
+
+                        <!-- Model -->
+                        <div class="col-md-6">
+                            <select v-model="form.model_code" class="form-select" required>
+                                <option :value="null" disabled>Chọn dòng xe</option>
+                                <option v-for="model in models" :key="model.code" :value="model.code">
+                                    {{ model.name }}
+                                </option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-4">
+                            <input v-model="form.ippan_kakaku" type="number" placeholder="Giá bán"
+                                class="form-control" />
+                        </div>
+
+                        <div class="col-md-4">
+                            <input v-model="form.noridasi_kakaku" type="number" placeholder="Giá lên sàn"
+                                class="form-control" readonly />
+                        </div>
+
+                        <div class="col-md-4">
+                            <input v-model="form.haikiryo" type="number" placeholder="Dung tích xi lanh (cc)"
+                                class="form-control" required />
+                        </div>
+
+                        <div class="col-md-4">
+                            <select v-model="form.color" class="form-select" required>
+                                <option :value="null" disabled>Chọn màu xe</option>
+                                <option value="xanh">Xanh</option>
+                                <option value="Đỏ">Đỏ</option>
+                                <option value="Tím">Tím</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-4">
                             <select v-model="form.soukou_fumei_flg" class="form-select" required>
                                 <option :value="1">Chính xác</option>
                                 <option :value="0">Không rõ</option>
                             </select>
                         </div>
-                        <div class="col-md-4 mb-3">
-                            <label class="form-label">Loại xe</label>
+
+                        <div class="col-md-4">
                             <select v-model="form.type" class="form-select" required>
                                 <option :value="1">Xe mới</option>
                                 <option :value="0">Xe cũ</option>
                             </select>
                         </div>
-                        <div class="col-md-4 mb-3">
-                            <label class="form-label">Trạng thái xe</label>
+
+                        <div class="col-md-4">
                             <select v-model="form.iyoukyo" class="form-select" required>
                                 <option :value="1">Bán</option>
                                 <option :value="0">Ẩn</option>
                             </select>
                         </div>
-                    </div>
-                    <!-- <div class="mb-3">
-                        <button
-                            class="btn btn-secondary"
-                            @click.prevent="multiFileInput?.click()"
-                        >
-                            Chọn nhiều ảnh (tối đa 10)
-                        </button>
-                        <input
-                            ref="multiFileInput"
-                            type="file"
-                            class="d-none"
-                            multiple
-                            accept="image/*"
-                            @change="onMultipleImageSelect"
-                        />
-                    </div> -->
-                    <!-- Dropzone cho ảnh -->
-                    <div class="dropzone mb-3 p-4 border border-secondary rounded text-center"
-                        @drop.prevent="onDropImages" @dragover.prevent @click="multiFileInput?.click()"
-                        style="cursor: pointer">
-                        <p class="text-muted mb-0">
-                            📂 Kéo ảnh vào đây hoặc bấm để chọn ảnh (tối đa 10)
-                        </p>
-                        <input ref="multiFileInput" type="file" class="d-none" multiple accept="image/*"
-                            @change="onMultipleImageSelect" />
-                    </div>
-                    <h4 class="mt-4">Ảnh (cố định 10 ảnh có thể kéo thả)</h4>
 
-                    <div class="col-12 mb-3">
-                        <draggable class="dragArea d-flex flex-wrap justify-content-start gap-3" :list="images"
+                        <!-- Các trường bổ sung từ fieldMap -->
+                        <div class="col-md-4" v-for="(field, key) in fieldMap" :key="key">
+                            <input v-model="form[key]" :type="field.type" :placeholder="field.label"
+                                class="form-control" :required="field.required" />
+                        </div>
+                    </div>
+
+                    <!-- Dropzone -->
+                    <div class="mt-4">
+                        <div class="dropzone p-4 border border-secondary rounded text-center"
+                            @drop.prevent="onDropImages" @dragover.prevent @click="multiFileInput?.click()"
+                            style="cursor: pointer">
+                            <p class="text-muted mb-0">📂 Kéo ảnh vào đây hoặc bấm để chọn ảnh (tối đa 10)</p>
+                            <input ref="multiFileInput" type="file" class="d-none" multiple accept="image/*"
+                                @change="onMultipleImageSelect" />
+                        </div>
+                    </div>
+
+                    <!-- Ảnh xem trước -->
+                    <!-- <div class="row mt-4">
+            <draggable class="dragArea d-flex flex-wrap gap-3" :list="images" @drop.prevent="onDropImages" @dragover.prevent>
+              <div v-for="(element, index) in images" :key="index" class="card" style="width: 200px">
+                <img :src="element.file ? getImageSrc(element) : '/images/default.png'" class="card-img-top rounded" style="height: 150px; object-fit: cover" />
+                <div class="card-body p-2">
+                  <label class="form-label d-block text-center">Ảnh {{ index + 1 }}</label>
+                  <button v-if="!element.file" class="btn btn-secondary btn-sm w-100 mb-2" @click.prevent="openFileSelector(index)">Chọn ảnh</button>
+                  <input type="file" ref="fileInputs" class="d-none" accept="image/*" @change="onSingleImageSelect($event, index)" />
+                  <button v-if="element.file" class="btn btn-danger btn-sm w-100 mt-2" @click.prevent="removeImage(index)">Xóa ảnh</button>
+                </div>
+              </div>
+            </draggable>
+          </div> -->
+                    <div class="mt-4">
+                        <draggable tag="div" class="grid-image-wrapper" :list="images" item-key="index"
                             @drop.prevent="onDropImages" @dragover.prevent>
-                            <div v-for="(element, index) in images" :key="index" class="card"
-                                style="width: 200px; flex: 0 0 auto">
-                                <!-- Ảnh hoặc placeholder -->
-                                <img :src="element.file
-                                        ? getImageSrc(element)
-                                        : '/images/default.png'
-                                    " class="card-img-top rounded" style="height: 150px; object-fit: fill" />
-
-                                <div class="card-body p-2">
-                                    <label class="form-label d-block text-center">
-                                        Ảnh {{ index + 1 }}
-                                    </label>
-
+                            <div v-for="(element, index) in images" :key="index" class="card h-100">
+                                <img :src="element.file ? getImageSrc(element) : '/images/default.png'"
+                                    class="card-img-top" />
+                                <div class="card-body p-2 text-center">
+                                    <label class="form-label">Ảnh {{ index + 1 }}</label>
                                     <button v-if="!element.file" class="btn btn-secondary btn-sm w-100 mb-2"
                                         @click.prevent="openFileSelector(index)">
                                         Chọn ảnh
                                     </button>
-
-                                    <input type="file" ref="fileInputs" class="d-none" accept="image/*" @change="
-                                        onSingleImageSelect($event, index)
-                                        " />
-
-                                    <button v-if="element.file" class="btn btn-danger btn-sm w-100 mt-2"
+                                    <input type="file" ref="fileInputs" class="d-none" accept="image/*"
+                                        @change="onSingleImageSelect($event, index)" />
+                                    <button v-if="element.file" class="btn btn-danger btn-sm w-100"
                                         @click.prevent="removeImage(index)">
                                         Xóa ảnh
                                     </button>
@@ -137,13 +126,12 @@
                             </div>
                         </draggable>
                     </div>
-
+                    <!-- Submit -->
                     <div class="mt-4">
-                        <button class="btn btn-primary" type="submit">
+                        <button class="btn btn-primary w-100" type="submit">
                             Tạo xe
                         </button>
                     </div>
-
                 </form>
             </div>
         </div>
@@ -187,7 +175,21 @@ const form = ref({
     haikiryo: null,
     noridasi_kakaku: 0,
 });
+//
+const getColClass = (index: number): string => {
+    const total = images.value.length;
 
+    if (total % 5 === 0) {
+        // 5 ảnh / hàng
+        return 'col-6 col-md-2';
+    } else if (total % 2 === 0) {
+        // 2 ảnh / hàng
+        return 'col-6 col-md-6';
+    }
+
+    // fallback nếu không chia đều
+    return 'col-6 col-md-4';
+};
 // Tự tính giá "noridasi_kakaku"
 watch(
     () => form.value.ippan_kakaku,
@@ -306,7 +308,7 @@ const submitForm = async () => {
     });
 
     try {
-        const response=  await axios.post("/api/motorcycles", formData, {
+        const response = await axios.post("/api/motorcycles", formData, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 "Content-Type": "multipart/form-data",
@@ -335,7 +337,20 @@ const submitForm = async () => {
         alert(response.data.message); // hoặc toast.success()
         router.push("/motorcycles-view"); // ✅ chuyển trang không reload
     } catch (err: any) {
-        alert(err.response?.data?.message || "Đã có lỗi xảy ra");
+        if (err.response?.status === 422 && err.response?.data?.errors) {
+            const validationErrors = err.response.data.errors;
+            let errorMessages: string[] = [];
+
+            for (const field in validationErrors) {
+                if (Array.isArray(validationErrors[field])) {
+                    errorMessages.push(...validationErrors[field]);
+                }
+            }
+
+            alert(errorMessages.join('\n'));
+        } else {
+            alert("Đã có lỗi xảy ra");
+        }
     }
 };
 watch(
@@ -395,5 +410,24 @@ input[type="number"] {
 
 .dropzone:hover {
     background-color: #e2e6ea;
+}
+
+.grid-image-wrapper {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(2, 1fr);
+    /* default: mobile */
+}
+
+@media (min-width: 768px) {
+    .grid-image-wrapper {
+        grid-template-columns: repeat(5, 1fr);
+        /* desktop: 5 ảnh / hàng */
+    }
+}
+
+.card-img-top {
+    height: 150px;
+    object-fit: cover;
 }
 </style>
