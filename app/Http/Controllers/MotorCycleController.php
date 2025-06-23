@@ -9,10 +9,9 @@ use App\Models\ModelMotor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Motorcycle;
-<<<<<<< HEAD
+
 use App\Models\MotorcycleLog;
-=======
->>>>>>> 022a8811203f58a2f62e4c7de2cfc0f35bb1d60d
+
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 
@@ -29,14 +28,10 @@ class MotorcycleController extends Controller
             ->filterMaxPrice($request->max_price)
             ->sortByField($request->sort_by, $request->sort_order);
 
-<<<<<<< HEAD
+
         $motorcycles = $query->orderBy('created_at', 'desc')->paginate($request->per_page ?? 10);
         return response()->json($motorcycles);
-=======
-        $motorcycles = $query->paginate($request->per_page ?? 10);
-        return response()->json($motorcycles);
-        
->>>>>>> 022a8811203f58a2f62e4c7de2cfc0f35bb1d60d
+
     }
     public function create()
     {
@@ -143,10 +138,7 @@ class MotorcycleController extends Controller
                 'color',
                 'iyoukyo',
                 'noridasi_kakaku',
-<<<<<<< HEAD
-=======
                
->>>>>>> 022a8811203f58a2f62e4c7de2cfc0f35bb1d60d
             ];
 
             $fieldLabels = [
@@ -216,7 +208,6 @@ class MotorcycleController extends Controller
     {
         return ModelMotor::where('maker_code', $makerCode)->get();
     }
-<<<<<<< HEAD
     public function getListLog(Request $request)
     {
         $query = MotorcycleLog::with(['motorcycle', 'user'])
@@ -229,8 +220,6 @@ class MotorcycleController extends Controller
         $logs = $query->paginate($request->per_page ?? 10);
         return response()->json($logs);
     }
-=======
->>>>>>> 022a8811203f58a2f62e4c7de2cfc0f35bb1d60d
 
     protected function handleMotorcycleImages(array $images, array &$updateData, Motorcycle $motorcycle = null): void
     {

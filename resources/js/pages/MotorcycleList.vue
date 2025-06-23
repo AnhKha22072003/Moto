@@ -12,11 +12,8 @@
         <div class="row g-2 align-items-end mb-3">
           <div class="col-md-2 col-sm-6">
             <label class="form-label">Hãng sản xuất</label>
-<<<<<<< HEAD
             <select v-model="filters.maker_code" class="form-select" @change="handleFilterChange">
-=======
             <select v-model="filters.maker_code" class="form-select">
->>>>>>> 022a8811203f58a2f62e4c7de2cfc0f35bb1d60d
               <option value="">-- Chọn hãng --</option>
               <option v-for="maker in makers" :key="maker.code" :value="maker.code">{{ maker.name }}</option>
             </select>
@@ -24,11 +21,8 @@
 
           <div class="col-md-2 col-sm-6">
             <label class="form-label">Dòng xe</label>
-<<<<<<< HEAD
             <select v-model="filters.model_code" class="form-select" @change="handleFilterChange">
-=======
             <select v-model="filters.model_code" class="form-select">
->>>>>>> 022a8811203f58a2f62e4c7de2cfc0f35bb1d60d
               <option value="">-- Chọn dòng --</option>
               <option v-for="model in models" :key="model.code" :value="model.code">{{ model.name }}</option>
             </select>
@@ -36,39 +30,30 @@
 
           <div class="col-md-2 col-sm-6">
             <label class="form-label">Năm SX</label>
-<<<<<<< HEAD
             <input v-model="filters.nensiki" type="number" class="form-control" placeholder="VD: 2020" @blur="fetchData"
               @keyup.enter="fetchData" />
-=======
             <input v-model="filters.nensiki" type="number" class="form-control" placeholder="VD: 2020" />
->>>>>>> 022a8811203f58a2f62e4c7de2cfc0f35bb1d60d
           </div>
 
           <div class="col-md-2 col-sm-6">
             <label class="form-label">ODO tối đa</label>
-<<<<<<< HEAD
             <input v-model="filters.odo" type="number" class="form-control" placeholder="VD: 30000"
               @blur="handleFilterChange" @keyup.enter="handleFilterChange" />
-=======
             <input v-model="filters.odo" type="number" class="form-control" placeholder="VD: 30000" />
->>>>>>> 022a8811203f58a2f62e4c7de2cfc0f35bb1d60d
           </div>
 
           <div class="col-md-2 col-sm-6">
             <label class="form-label">Giá tối đa</label>
-<<<<<<< HEAD
             <input v-model="filters.price" type="number" class="form-control" placeholder="VD: 100000000"
               @blur="handleFilterChange" @keyup.enter="handleFilterChange" />
           </div>
 
           <div class="col-md-2 col-sm-6 d-flex gap-2">
-=======
             <input v-model="filters.price" type="number" class="form-control" placeholder="VD: 100000000" />
           </div>
 
           <div class="col-md-2 col-sm-6 d-flex gap-2">
             <button class="btn btn-primary w-100" @click="fetchData">Tìm</button>
->>>>>>> 022a8811203f58a2f62e4c7de2cfc0f35bb1d60d
             <button class="btn btn-outline-secondary w-100" @click="clearFilters">Xóa</button>
           </div>
         </div>
@@ -79,11 +64,8 @@
         <table class="table table-vcenter card-table">
           <thead>
             <tr>
-<<<<<<< HEAD
               <th>Thứ tự</th>
-=======
               <th>ID</th>
->>>>>>> 022a8811203f58a2f62e4c7de2cfc0f35bb1d60d
               <th @click="sort('id')" class="link-style">Code</th>
               <th @click="sort('maker_code')" class="link-style">Maker</th>
               <th @click="sort('model_code')" class="link-style">Model</th>
@@ -138,12 +120,9 @@
           <li class="page-item" :class="{ disabled: page === 1 }">
             <a class="page-link cursor-pointer" @click="goToPage(page - 1)">«</a>
           </li>
-<<<<<<< HEAD
           <li v-for="p in paginationList" :key="p" class="page-item"
             :class="{ active: p === page, disabled: p === '...' }">
-=======
           <li v-for="p in paginationList" :key="p" class="page-item" :class="{ active: p === page, disabled: p === '...' }">
->>>>>>> 022a8811203f58a2f62e4c7de2cfc0f35bb1d60d
             <a class="page-link cursor-pointer" v-if="p !== '...'" @click="goToPage(p)">{{ p }}</a>
             <span class="page-link" v-else>…</span>
           </li>
@@ -227,7 +206,6 @@ const fetchData = async () => {
     console.error("Lỗi tải danh sách xe:", error);
   }
 };
-<<<<<<< HEAD
 //
 watch(() => filters.value.maker_code, async (makerCode) => {
   filters.value.model_code = "";
@@ -250,22 +228,17 @@ const setPerPage = (value: number) => {
   perPage.value = value;
   page.value = 1;
   // fetchData();
-=======
 
 const setPerPage = (value: number) => {
   perPage.value = value;
   page.value = 1;
   fetchData();
->>>>>>> 022a8811203f58a2f62e4c7de2cfc0f35bb1d60d
 };
 
 const goToPage = (val: number | string) => {
   if (val === "..." || typeof val !== "number" || val < 1 || val > totalPages.value) return;
-<<<<<<< HEAD
   // console.log("Navigating to page:", val);
   if (val === page.value) return;
-=======
->>>>>>> 022a8811203f58a2f62e4c7de2cfc0f35bb1d60d
   page.value = val;
   fetchData();
 };
@@ -376,7 +349,6 @@ onMounted(async () => {
 
 .link-style:hover {
   text-decoration: underline;
-<<<<<<< HEAD
 }
 
 .table .dropdown {
@@ -385,7 +357,5 @@ onMounted(async () => {
 
 .dropdown-menu {
   z-index: 9999;
-=======
->>>>>>> 022a8811203f58a2f62e4c7de2cfc0f35bb1d60d
 }
 </style>

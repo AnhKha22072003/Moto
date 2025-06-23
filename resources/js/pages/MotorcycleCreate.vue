@@ -468,7 +468,6 @@ const submitForm = async () => {
       formData.append(`images[${index}][title]`, img.title || `Ảnh ${index + 1}`);
     });
 
-<<<<<<< HEAD
   try {
     const response = await axios.post("/api/motorcycles", formData, {
       headers: {
@@ -476,7 +475,6 @@ const submitForm = async () => {
         "Content-Type": "multipart/form-data",
       },
     });
-=======
     try {
         const response = await axios.post("/api/motorcycles", formData, {
             headers: {
@@ -498,7 +496,6 @@ const submitForm = async () => {
             haikiryo: null,
             noridasi_kakaku: 0,
         };
->>>>>>> 022a8811203f58a2f62e4c7de2cfc0f35bb1d60d
 
     // Reset form
     form.value = {
@@ -516,7 +513,6 @@ const submitForm = async () => {
       noridasi_kakaku: 0,
     };
 
-<<<<<<< HEAD
     // Reset ảnh
     images.value = Array.from({ length: 10 }, () => ({ file: null, title: "" }));
 
@@ -536,7 +532,6 @@ const submitForm = async () => {
       alert(errorMessages.join('\n'));
     } else {
       alert("Đã có lỗi xảy ra");
-=======
         alert(response.data.message); // hoặc toast.success()
         router.push("/motorcycles-view"); // ✅ chuyển trang không reload
     } catch (err: any) {
@@ -554,14 +549,10 @@ const submitForm = async () => {
         } else {
             alert("Đã có lỗi xảy ra");
         }
->>>>>>> 022a8811203f58a2f62e4c7de2cfc0f35bb1d60d
     }
   }
 };
-<<<<<<< HEAD
 //
-=======
->>>>>>> 022a8811203f58a2f62e4c7de2cfc0f35bb1d60d
 watch(
     () => form.value.maker_code,
     async (makerCode) => {
