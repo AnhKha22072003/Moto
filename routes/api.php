@@ -13,7 +13,10 @@ Route::middleware(['auth:sanctum'])->prefix('motorcycles')->group(function () {
     Route::get('/maker-select', [MotorcycleController::class, 'makerSelect']);
     Route::get('/models/{makerCode}', [MotorcycleController::class, 'getModelsByMaker']);
     Route::post('/bulk-update', [MotorcycleController::class, 'bulkUpdate']);
+<<<<<<< HEAD
     Route::get('/logs-list', [MotorcycleController::class, 'getListLog']);
+=======
+>>>>>>> 022a8811203f58a2f62e4c7de2cfc0f35bb1d60d
     Route::get('/', [MotorcycleController::class, 'index']);
     Route::post('/', [MotorcycleController::class, 'store']);
     Route::get('{id}', [MotorcycleController::class, 'show']);

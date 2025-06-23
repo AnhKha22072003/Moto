@@ -28,6 +28,7 @@
                         </div>
 
                         <div class="col-md-4">
+<<<<<<< HEAD
                             <label class="form-label">Giá bán</label>
                             <input v-model="form.ippan_kakaku" type="number" placeholder="Giá bán" class="form-control"
                                 required />
@@ -35,18 +36,31 @@
 
                         <div class="col-md-4">
                             <label class="form-label">Giá lên sàn (tự động +15%)</label>
+=======
+                            <input v-model="form.ippan_kakaku" type="number" placeholder="Giá bán"
+                                class="form-control" />
+                        </div>
+
+                        <div class="col-md-4">
+>>>>>>> 022a8811203f58a2f62e4c7de2cfc0f35bb1d60d
                             <input v-model="form.noridasi_kakaku" type="number" placeholder="Giá lên sàn"
                                 class="form-control" readonly />
                         </div>
 
                         <div class="col-md-4">
+<<<<<<< HEAD
                             <label class="form-label">Dung tích xi lanh</label>
+=======
+>>>>>>> 022a8811203f58a2f62e4c7de2cfc0f35bb1d60d
                             <input v-model="form.haikiryo" type="number" placeholder="Dung tích xi lanh (cc)"
                                 class="form-control" required />
                         </div>
 
                         <div class="col-md-4">
+<<<<<<< HEAD
                             <label class="form-label">Màu xe</label>
+=======
+>>>>>>> 022a8811203f58a2f62e4c7de2cfc0f35bb1d60d
                             <select v-model="form.color" class="form-select" required>
                                 <option :value="null" disabled>Chọn màu xe</option>
                                 <option value="xanh">Xanh</option>
@@ -56,7 +70,10 @@
                         </div>
 
                         <div class="col-md-4">
+<<<<<<< HEAD
                             <label class="form-label">Xác nhận ODO</label>
+=======
+>>>>>>> 022a8811203f58a2f62e4c7de2cfc0f35bb1d60d
                             <select v-model="form.soukou_fumei_flg" class="form-select" required>
                                 <option :value="1">Chính xác</option>
                                 <option :value="0">Không rõ</option>
@@ -64,7 +81,10 @@
                         </div>
 
                         <div class="col-md-4">
+<<<<<<< HEAD
                             <label class="form-label">Loại xe</label>
+=======
+>>>>>>> 022a8811203f58a2f62e4c7de2cfc0f35bb1d60d
                             <select v-model="form.type" class="form-select" required>
                                 <option :value="1">Xe mới</option>
                                 <option :value="0">Xe cũ</option>
@@ -72,7 +92,10 @@
                         </div>
 
                         <div class="col-md-4">
+<<<<<<< HEAD
                             <label class="form-label">Trạng thái xe</label>
+=======
+>>>>>>> 022a8811203f58a2f62e4c7de2cfc0f35bb1d60d
                             <select v-model="form.iyoukyo" class="form-select" required>
                                 <option :value="1">Bán</option>
                                 <option :value="0">Ẩn</option>
@@ -81,7 +104,10 @@
 
                         <!-- Các trường bổ sung từ fieldMap -->
                         <div class="col-md-4" v-for="(field, key) in fieldMap" :key="key">
+<<<<<<< HEAD
                             <label class="form-label">{{ field.label }}</label>
+=======
+>>>>>>> 022a8811203f58a2f62e4c7de2cfc0f35bb1d60d
                             <input v-model="form[key]" :type="field.type" :placeholder="field.label"
                                 class="form-control" :required="field.required" />
                         </div>
@@ -99,13 +125,30 @@
                     </div>
 
                     <!-- Ảnh xem trước -->
+<<<<<<< HEAD
 
+=======
+                    <!-- <div class="row mt-4">
+            <draggable class="dragArea d-flex flex-wrap gap-3" :list="images" @drop.prevent="onDropImages" @dragover.prevent>
+              <div v-for="(element, index) in images" :key="index" class="card" style="width: 200px">
+                <img :src="element.file ? getImageSrc(element) : '/images/default.png'" class="card-img-top rounded" style="height: 150px; object-fit: cover" />
+                <div class="card-body p-2">
+                  <label class="form-label d-block text-center">Ảnh {{ index + 1 }}</label>
+                  <button v-if="!element.file" class="btn btn-secondary btn-sm w-100 mb-2" @click.prevent="openFileSelector(index)">Chọn ảnh</button>
+                  <input type="file" ref="fileInputs" class="d-none" accept="image/*" @change="onSingleImageSelect($event, index)" />
+                  <button v-if="element.file" class="btn btn-danger btn-sm w-100 mt-2" @click.prevent="removeImage(index)">Xóa ảnh</button>
+                </div>
+              </div>
+            </draggable>
+          </div> -->
+>>>>>>> 022a8811203f58a2f62e4c7de2cfc0f35bb1d60d
                     <div class="mt-4">
                         <draggable tag="div" class="grid-image-wrapper" :list="images" item-key="index"
                             @drop.prevent="onDropImages" @dragover.prevent>
                             <div v-for="(element, index) in images" :key="index" class="card h-100">
                                 <img :src="element.file ? getImageSrc(element) : '/images/default.png'"
                                     class="card-img-top" />
+<<<<<<< HEAD
 
                                 <div class="card-body p-2 text-center">
                                     <!-- ✅ Sửa: input để nhập tiêu đề ảnh -->
@@ -113,15 +156,24 @@
                                         placeholder="Nhập tiêu đề ảnh" />
 
                                     <!-- Chọn ảnh -->
+=======
+                                <div class="card-body p-2 text-center">
+                                    <label class="form-label">Ảnh {{ index + 1 }}</label>
+>>>>>>> 022a8811203f58a2f62e4c7de2cfc0f35bb1d60d
                                     <button v-if="!element.file" class="btn btn-secondary btn-sm w-100 mb-2"
                                         @click.prevent="openFileSelector(index)">
                                         Chọn ảnh
                                     </button>
+<<<<<<< HEAD
 
                                     <input type="file" ref="fileInputs" class="d-none" accept="image/*"
                                         @change="onSingleImageSelect($event, index)" />
 
                                     <!-- Xóa ảnh -->
+=======
+                                    <input type="file" ref="fileInputs" class="d-none" accept="image/*"
+                                        @change="onSingleImageSelect($event, index)" />
+>>>>>>> 022a8811203f58a2f62e4c7de2cfc0f35bb1d60d
                                     <button v-if="element.file" class="btn btn-danger btn-sm w-100"
                                         @click.prevent="removeImage(index)">
                                         Xóa ảnh
@@ -416,6 +468,7 @@ const submitForm = async () => {
       formData.append(`images[${index}][title]`, img.title || `Ảnh ${index + 1}`);
     });
 
+<<<<<<< HEAD
   try {
     const response = await axios.post("/api/motorcycles", formData, {
       headers: {
@@ -423,6 +476,29 @@ const submitForm = async () => {
         "Content-Type": "multipart/form-data",
       },
     });
+=======
+    try {
+        const response = await axios.post("/api/motorcycles", formData, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "multipart/form-data",
+            },
+        });
+        form.value = {
+            maker_code: null,
+            model_code: null,
+            type: 1,
+            ippan_kakaku: null,
+            nensiki: null,
+            soukou: null,
+            color: null,
+            iyoukyo: 1,
+            first_year_registration: null,
+            soukou_fumei_flg: 1,
+            haikiryo: null,
+            noridasi_kakaku: 0,
+        };
+>>>>>>> 022a8811203f58a2f62e4c7de2cfc0f35bb1d60d
 
     // Reset form
     form.value = {
@@ -440,6 +516,7 @@ const submitForm = async () => {
       noridasi_kakaku: 0,
     };
 
+<<<<<<< HEAD
     // Reset ảnh
     images.value = Array.from({ length: 10 }, () => ({ file: null, title: "" }));
 
@@ -459,10 +536,32 @@ const submitForm = async () => {
       alert(errorMessages.join('\n'));
     } else {
       alert("Đã có lỗi xảy ra");
+=======
+        alert(response.data.message); // hoặc toast.success()
+        router.push("/motorcycles-view"); // ✅ chuyển trang không reload
+    } catch (err: any) {
+        if (err.response?.status === 422 && err.response?.data?.errors) {
+            const validationErrors = err.response.data.errors;
+            let errorMessages: string[] = [];
+
+            for (const field in validationErrors) {
+                if (Array.isArray(validationErrors[field])) {
+                    errorMessages.push(...validationErrors[field]);
+                }
+            }
+
+            alert(errorMessages.join('\n'));
+        } else {
+            alert("Đã có lỗi xảy ra");
+        }
+>>>>>>> 022a8811203f58a2f62e4c7de2cfc0f35bb1d60d
     }
   }
 };
+<<<<<<< HEAD
 //
+=======
+>>>>>>> 022a8811203f58a2f62e4c7de2cfc0f35bb1d60d
 watch(
     () => form.value.maker_code,
     async (makerCode) => {

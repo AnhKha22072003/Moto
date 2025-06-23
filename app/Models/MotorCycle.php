@@ -90,6 +90,7 @@ class MotorCycle extends Model
     }
     public function scopeFilterMaker(Builder $query, $maker)
     {
+        // dd($maker);
         return $query->when($maker, fn($q) => $q->where('maker_code', $maker));
     }
 
