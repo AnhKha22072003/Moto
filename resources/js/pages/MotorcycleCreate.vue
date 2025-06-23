@@ -29,8 +29,8 @@
 
                         <div class="col-md-4">
                             <label class="form-label">Giá bán</label>
-                            <input v-model="form.ippan_kakaku" type="number" placeholder="Giá bán"
-                                class="form-control"  required/>
+                            <input v-model="form.ippan_kakaku" type="number" placeholder="Giá bán" class="form-control"
+                                required />
                         </div>
 
                         <div class="col-md-4">
@@ -46,7 +46,7 @@
                         </div>
 
                         <div class="col-md-4">
-                             <label class="form-label">Màu xe</label>
+                            <label class="form-label">Màu xe</label>
                             <select v-model="form.color" class="form-select" required>
                                 <option :value="null" disabled>Chọn màu xe</option>
                                 <option value="xanh">Xanh</option>
@@ -56,7 +56,7 @@
                         </div>
 
                         <div class="col-md-4">
-                             <label class="form-label">Xác nhận ODO</label>
+                            <label class="form-label">Xác nhận ODO</label>
                             <select v-model="form.soukou_fumei_flg" class="form-select" required>
                                 <option :value="1">Chính xác</option>
                                 <option :value="0">Không rõ</option>
@@ -64,7 +64,7 @@
                         </div>
 
                         <div class="col-md-4">
-                              <label class="form-label">Loại xe</label>
+                            <label class="form-label">Loại xe</label>
                             <select v-model="form.type" class="form-select" required>
                                 <option :value="1">Xe mới</option>
                                 <option :value="0">Xe cũ</option>
@@ -72,7 +72,7 @@
                         </div>
 
                         <div class="col-md-4">
-                             <label class="form-label">Trạng thái xe</label>
+                            <label class="form-label">Trạng thái xe</label>
                             <select v-model="form.iyoukyo" class="form-select" required>
                                 <option :value="1">Bán</option>
                                 <option :value="0">Ẩn</option>
@@ -81,7 +81,7 @@
 
                         <!-- Các trường bổ sung từ fieldMap -->
                         <div class="col-md-4" v-for="(field, key) in fieldMap" :key="key">
-                             <label class="form-label">{{ field.label }}</label>
+                            <label class="form-label">{{ field.label }}</label>
                             <input v-model="form[key]" :type="field.type" :placeholder="field.label"
                                 class="form-control" :required="field.required" />
                         </div>
@@ -99,21 +99,29 @@
                     </div>
 
                     <!-- Ảnh xem trước -->
-             
+
                     <div class="mt-4">
                         <draggable tag="div" class="grid-image-wrapper" :list="images" item-key="index"
                             @drop.prevent="onDropImages" @dragover.prevent>
                             <div v-for="(element, index) in images" :key="index" class="card h-100">
                                 <img :src="element.file ? getImageSrc(element) : '/images/default.png'"
                                     class="card-img-top" />
+
                                 <div class="card-body p-2 text-center">
-                                    <label class="form-label">Ảnh {{ index + 1 }}</label>
+                                    <!-- ✅ Sửa: input để nhập tiêu đề ảnh -->
+                                    <input type="text" v-model="element.title" class="form-control form-control-sm mb-2"
+                                        placeholder="Nhập tiêu đề ảnh" />
+
+                                    <!-- Chọn ảnh -->
                                     <button v-if="!element.file" class="btn btn-secondary btn-sm w-100 mb-2"
                                         @click.prevent="openFileSelector(index)">
                                         Chọn ảnh
                                     </button>
+
                                     <input type="file" ref="fileInputs" class="d-none" accept="image/*"
                                         @change="onSingleImageSelect($event, index)" />
+
+                                    <!-- Xóa ảnh -->
                                     <button v-if="element.file" class="btn btn-danger btn-sm w-100"
                                         @click.prevent="removeImage(index)">
                                         Xóa ảnh
@@ -214,7 +222,7 @@ const fieldMap: Record<
         required: true,
     },
     nensiki: { label: "Năm sản xuất", type: "number", required: true },
-    soukou: { label: "ODO", type: "number" },
+    soukou: { label: "ODO", type: "number", required: true },
 };
 
 // Danh sách ảnh (10 ảnh)
@@ -232,8 +240,12 @@ const onSingleImageSelect = (event: Event, index: number) => {
 };
 
 // Xóa ảnh
+// const removeImage = (index: number) => {
+//     images.value[index].file = null;
+// };
 const removeImage = (index: number) => {
-    images.value[index].file = null;
+  images.value.splice(index, 1); // Xóa ảnh khỏi mảng
+  images.value.push({ file: null, title: "" }); // Thêm slot trống cuối
 };
 
 // Hiển thị ảnh (file mới)
@@ -243,112 +255,214 @@ const getImageSrc = (element: ImageBlock) => {
         : "";
 };
 //
+// const onMultipleImageSelect = (event: Event) => {
+//     const files = (event.target as HTMLInputElement).files;
+//     if (!files) return;
+
+//     const fileList = Array.from(files).slice(0, 10); // giới hạn tối đa 10 ảnh
+//     const max = Math.min(10, fileList.length);
+
+//     for (let i = 0; i < max; i++) {
+//         const file = fileList[i];
+//         images.value[i].file = file;
+//         images.value[i].title = `Ảnh ${i + 1}`;
+//     }
+
+//     // Các slot còn lại nếu chưa có ảnh thì giữ nguyên hoặc để null
+//     for (let i = max; i < 10; i++) {
+//         if (!images.value[i].file) {
+//             images.value[i].file = null;
+//             images.value[i].title = `Ảnh ${i + 1}`;
+//         }
+//     }
+
+//     (event.target as HTMLInputElement).value = "";
+// };
+
+// const onDropImages = (event: DragEvent) => {
+//     const droppedFiles = event.dataTransfer?.files;
+//     if (!droppedFiles) return;
+
+//     const files = Array.from(droppedFiles).filter(f => f.type.startsWith("image/")).slice(0, 10);
+
+//     for (let i = 0; i < files.length; i++) {
+//         images.value[i].file = files[i];
+//         images.value[i].title = `Ảnh ${i + 1}`;
+//     }
+
+//     for (let i = files.length; i < 10; i++) {
+//         if (!images.value[i].file) {
+//             images.value[i].file = null;
+//             images.value[i].title = `Ảnh ${i + 1}`;
+//         }
+//     }
+// };
+
 const onMultipleImageSelect = (event: Event) => {
-    const files = (event.target as HTMLInputElement).files;
-    if (!files) return;
+  const files = (event.target as HTMLInputElement).files;
+  if (!files) return;
 
-    const fileList = Array.from(files).slice(0, 10); // giới hạn tối đa 10 ảnh
-    const max = Math.min(10, fileList.length);
-
-    for (let i = 0; i < max; i++) {
-        const file = fileList[i];
-        images.value[i].file = file;
-        images.value[i].title = `Ảnh ${i + 1}`;
-    }
-
-    // Các slot còn lại nếu chưa có ảnh thì giữ nguyên hoặc để null
-    for (let i = max; i < 10; i++) {
-        if (!images.value[i].file) {
-            images.value[i].file = null;
-            images.value[i].title = `Ảnh ${i + 1}`;
-        }
-    }
-
-    (event.target as HTMLInputElement).value = "";
+  addImagesToEmptySlots(files);
+  (event.target as HTMLInputElement).value = "";
 };
 
 const onDropImages = (event: DragEvent) => {
-    const droppedFiles = event.dataTransfer?.files;
-    if (!droppedFiles) return;
+  const droppedFiles = event.dataTransfer?.files;
+  if (!droppedFiles) return;
 
-    const files = Array.from(droppedFiles).filter(f => f.type.startsWith("image/")).slice(0, 10);
-
-    for (let i = 0; i < files.length; i++) {
-        images.value[i].file = files[i];
-        images.value[i].title = `Ảnh ${i + 1}`;
-    }
-
-    for (let i = files.length; i < 10; i++) {
-        if (!images.value[i].file) {
-            images.value[i].file = null;
-            images.value[i].title = `Ảnh ${i + 1}`;
-        }
-    }
+  addImagesToEmptySlots(droppedFiles);
 };
+
+// ✅ Hàm mới thêm ảnh vào các slot trống và báo lỗi nếu thiếu slot
+const addImagesToEmptySlots = (fileList: FileList) => {
+  const files = Array.from(fileList).filter(f => f.type.startsWith("image/"));
+  const emptySlots = images.value.filter(img => !img.file);
+
+  if (files.length > emptySlots.length) {
+    alert(`Chỉ còn ${emptySlots.length} slot trống, bạn đang upload ${files.length} ảnh.`);
+  }
+
+  const maxAdd = Math.min(emptySlots.length, files.length);
+  let fileIndex = 0;
+  
+  for (let img of images.value) {
+    if (!img.file && fileIndex < maxAdd) {
+      img.file = files[fileIndex++];
+      img.title = "";
+    }
+  }
+};
+
+
+//
 const token = localStorage.getItem("token");
 
+// const submitForm = async () => {
+//     const formData = new FormData();
+
+//     for (const key in form.value) {
+//         const value = (form.value as any)[key];
+//         if (value !== null) formData.append(key, value);
+//     }
+
+//     // Thêm ảnh
+//     images.value.forEach((img, index) => {
+//         if (img.file) {
+//             formData.append(`images[${index}][images]`, img.file);
+//             formData.append(`images[${index}][title]`, img.title);
+//         }
+//     });
+
+//     try {
+//         const response = await axios.post("/api/motorcycles", formData, {
+//             headers: {
+//                 Authorization: `Bearer ${token}`,
+//                 "Content-Type": "multipart/form-data",
+//             },
+//         });
+//         form.value = {
+//             maker_code: null,
+//             model_code: null,
+//             type: 1,
+//             ippan_kakaku: null,
+//             nensiki: null,
+//             soukou: null,
+//             color: null,
+//             iyoukyo: 1,
+//             first_year_registration: null,
+//             soukou_fumei_flg: 1,
+//             haikiryo: null,
+//             noridasi_kakaku: 0,
+//         };
+
+//         images.value = Array.from({ length: 10 }, (_, i) => ({
+//             file: null,
+//             title: `Ảnh ${i + 1}`,
+//         }));
+
+//         alert(response.data.message); // hoặc toast.success()
+//         router.push("/motorcycles-view"); // ✅ chuyển trang không reload
+//     } catch (err: any) {
+//         if (err.response?.status === 422 && err.response?.data?.errors) {
+//             const validationErrors = err.response.data.errors;
+//             let errorMessages: string[] = [];
+
+//             for (const field in validationErrors) {
+//                 if (Array.isArray(validationErrors[field])) {
+//                     errorMessages.push(...validationErrors[field]);
+//                 }
+//             }
+
+//             alert(errorMessages.join('\n'));
+//         } else {
+//             alert("Đã có lỗi xảy ra");
+//         }
+//     }
+// };
+//
 const submitForm = async () => {
-    const formData = new FormData();
+  const formData = new FormData();
 
-    for (const key in form.value) {
-        const value = (form.value as any)[key];
-        if (value !== null) formData.append(key, value);
-    }
+  for (const key in form.value) {
+    const value = (form.value as any)[key];
+    if (value !== null) formData.append(key, value);
+  }
 
-    // Thêm ảnh
-    images.value.forEach((img, index) => {
-        if (img.file) {
-            formData.append(`images[${index}][images]`, img.file);
-            formData.append(`images[${index}][title]`, img.title);
-        }
+  // Chỉ gửi các ảnh đã chọn, đẩy lên liên tục từ 0, không để slot trống
+  images.value
+    .filter(img => img.file)
+    .forEach((img, index) => {
+      formData.append(`images[${index}][images]`, img.file as File);
+      formData.append(`images[${index}][title]`, img.title || `Ảnh ${index + 1}`);
     });
 
-    try {
-        const response = await axios.post("/api/motorcycles", formData, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "multipart/form-data",
-            },
-        });
-        form.value = {
-            maker_code: null,
-            model_code: null,
-            type: 1,
-            ippan_kakaku: null,
-            nensiki: null,
-            soukou: null,
-            color: null,
-            iyoukyo: 1,
-            first_year_registration: null,
-            soukou_fumei_flg: 1,
-            haikiryo: null,
-            noridasi_kakaku: 0,
-        };
+  try {
+    const response = await axios.post("/api/motorcycles", formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
+      },
+    });
 
-        images.value = Array.from({ length: 10 }, (_, i) => ({
-            file: null,
-            title: `Ảnh ${i + 1}`,
-        }));
+    // Reset form
+    form.value = {
+      maker_code: null,
+      model_code: null,
+      type: 1,
+      ippan_kakaku: null,
+      nensiki: null,
+      soukou: null,
+      color: null,
+      iyoukyo: 1,
+      first_year_registration: null,
+      soukou_fumei_flg: 1,
+      haikiryo: null,
+      noridasi_kakaku: 0,
+    };
 
-        alert(response.data.message); // hoặc toast.success()
-        router.push("/motorcycles-view"); // ✅ chuyển trang không reload
-    } catch (err: any) {
-        if (err.response?.status === 422 && err.response?.data?.errors) {
-            const validationErrors = err.response.data.errors;
-            let errorMessages: string[] = [];
+    // Reset ảnh
+    images.value = Array.from({ length: 10 }, () => ({ file: null, title: "" }));
 
-            for (const field in validationErrors) {
-                if (Array.isArray(validationErrors[field])) {
-                    errorMessages.push(...validationErrors[field]);
-                }
-            }
+    alert(response.data.message);
+    router.push("/motorcycles-view");
+  } catch (err: any) {
+    if (err.response?.status === 422 && err.response?.data?.errors) {
+      const validationErrors = err.response.data.errors;
+      let errorMessages: string[] = [];
 
-            alert(errorMessages.join('\n'));
-        } else {
-            alert("Đã có lỗi xảy ra");
+      for (const field in validationErrors) {
+        if (Array.isArray(validationErrors[field])) {
+          errorMessages.push(...validationErrors[field]);
         }
+      }
+
+      alert(errorMessages.join('\n'));
+    } else {
+      alert("Đã có lỗi xảy ra");
     }
+  }
 };
+//
 watch(
     () => form.value.maker_code,
     async (makerCode) => {

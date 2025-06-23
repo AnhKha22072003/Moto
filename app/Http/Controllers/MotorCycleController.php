@@ -26,7 +26,7 @@ class MotorcycleController extends Controller
             ->filterMaxPrice($request->max_price)
             ->sortByField($request->sort_by, $request->sort_order);
 
-        $motorcycles = $query->paginate($request->per_page ?? 10);
+        $motorcycles = $query->orderBy('created_at', 'desc')->paginate($request->per_page ?? 10);
         return response()->json($motorcycles);
     }
     public function create()
@@ -64,6 +64,15 @@ class MotorcycleController extends Controller
     public function destroy($id)
     {
         $motorcycle = Motorcycle::findOrFail($id);
+        // for ($i = 1; $i <= 10; $i++) {
+        //     $photoField = "photo{$i}";
+        //     $photoPath = $motorcycle->$photoField;
+
+        //     if ($photoPath && Storage::disk('public')->exists($photoPath)) {
+        //         Storage::disk('public')->delete($photoPath);
+        //     }
+        // }
+
         $motorcycle->delete();
         return response()->json(['message' => 'Deleted']);
     }
@@ -238,7 +247,7 @@ class MotorcycleController extends Controller
 
         foreach ($images as $imageData) {
             $slot = (int) ($imageData['slot'] ?? 0);
-      
+
             if ($slot < 1 || $slot > 10) continue;
 
             $photoKey = "photo{$slot}";

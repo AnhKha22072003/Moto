@@ -12,15 +12,15 @@
         <div class="row g-2 align-items-end mb-3">
           <div class="col-md-2 col-sm-6">
             <label class="form-label">Hãng sản xuất</label>
-            <select @click="fetchData" v-model="filters.maker_code" class="form-select">
+            <select v-model="filters.maker_code" class="form-select" @change="handleFilterChange">
               <option value="">-- Chọn hãng --</option>
-              <option  v-for="maker in makers" :key="maker.code" :value="maker.code">{{ maker.name }}</option>
+              <option v-for="maker in makers" :key="maker.code" :value="maker.code">{{ maker.name }}</option>
             </select>
           </div>
 
           <div class="col-md-2 col-sm-6">
             <label class="form-label">Dòng xe</label>
-            <select v-model="filters.model_code" class="form-select">
+            <select v-model="filters.model_code" class="form-select" @change="handleFilterChange">
               <option value="">-- Chọn dòng --</option>
               <option v-for="model in models" :key="model.code" :value="model.code">{{ model.name }}</option>
             </select>
@@ -28,21 +28,23 @@
 
           <div class="col-md-2 col-sm-6">
             <label class="form-label">Năm SX</label>
-            <input v-model="filters.nensiki" type="number" class="form-control" placeholder="VD: 2020" />
+            <input v-model="filters.nensiki" type="number" class="form-control" placeholder="VD: 2020" @blur="fetchData"
+              @keyup.enter="fetchData" />
           </div>
 
           <div class="col-md-2 col-sm-6">
             <label class="form-label">ODO tối đa</label>
-            <input v-model="filters.odo" type="number" class="form-control" placeholder="VD: 30000" />
+            <input v-model="filters.odo" type="number" class="form-control" placeholder="VD: 30000"
+              @blur="handleFilterChange" @keyup.enter="handleFilterChange" />
           </div>
 
           <div class="col-md-2 col-sm-6">
             <label class="form-label">Giá tối đa</label>
-            <input v-model="filters.price" type="number" class="form-control" placeholder="VD: 100000000" />
+            <input v-model="filters.price" type="number" class="form-control" placeholder="VD: 100000000"
+              @blur="handleFilterChange" @keyup.enter="handleFilterChange" />
           </div>
 
           <div class="col-md-2 col-sm-6 d-flex gap-2">
-            <button class="btn btn-primary w-100" @click="fetchData">Tìm</button>
             <button class="btn btn-outline-secondary w-100" @click="clearFilters">Xóa</button>
           </div>
         </div>
@@ -53,7 +55,7 @@
         <table class="table table-vcenter card-table">
           <thead>
             <tr>
-              <th>ID</th>
+              <th>Thứ tự</th>
               <th @click="sort('id')" class="link-style">Code</th>
               <th @click="sort('maker_code')" class="link-style">Maker</th>
               <th @click="sort('model_code')" class="link-style">Model</th>
@@ -108,8 +110,9 @@
           <li class="page-item" :class="{ disabled: page === 1 }">
             <a class="page-link cursor-pointer" @click="goToPage(page - 1)">«</a>
           </li>
-          <li v-for="p in paginationList" :key="p" class="page-item" :class="{ active: p === page, disabled: p === '...' }">
-            <a class="page-link cursor-pointer"   v-if="p !== '...'" @click="goToPage(p)">{{ p }}</a>
+          <li v-for="p in paginationList" :key="p" class="page-item"
+            :class="{ active: p === page, disabled: p === '...' }">
+            <a class="page-link cursor-pointer" v-if="p !== '...'" @click="goToPage(p)">{{ p }}</a>
             <span class="page-link" v-else>…</span>
           </li>
           <li class="page-item" :class="{ disabled: !hasNextPage }">
@@ -192,7 +195,24 @@ const fetchData = async () => {
     console.error("Lỗi tải danh sách xe:", error);
   }
 };
+//
+watch(() => filters.value.maker_code, async (makerCode) => {
+  filters.value.model_code = "";
+  if (!makerCode) return (models.value = []);
+  await fetchModelsByMaker(makerCode);
+});
+watch(() => filters.value.model_code, () => {
+    page.value = 1;
+  fetchData();
+});
+const handleFilterChange = () => {
+  page.value = 1; // Reset về trang 1 khi lọc
+  fetchData();
+};
 
+
+
+//
 const setPerPage = (value: number) => {
   perPage.value = value;
   page.value = 1;
@@ -310,12 +330,15 @@ onMounted(async () => {
   cursor: pointer;
   text-decoration: none;
 }
+
 .link-style:hover {
   text-decoration: underline;
 }
+
 .table .dropdown {
   position: static;
 }
+
 .dropdown-menu {
   z-index: 9999;
 }
