@@ -7,10 +7,6 @@
             <div class="card-body">
                 <form @submit.prevent="submitForm">
                     <div class="row g-3">
-<<<<<<< HEAD
-=======
-                        <!-- Hãng xe -->
->>>>>>> 022a8811203f58a2f62e4c7de2cfc0f35bb1d60d
                         <div class="col-md-6">
                             <select v-model="form.maker_code" class="form-select" required>
                                 <option :value="null" disabled>Chọn hãng xe</option>
@@ -20,22 +16,12 @@
                             </select>
                         </div>
                         <div class="col-md-6">
-<<<<<<< HEAD
                             <select v-model="form.model_code" class="form-select" required>
                                 <option :value="null" disabled>Chọn loại xe</option>
                                 <option v-for="model in models" :key="model.code" :value="model.code">
                                     {{ model.name }}
                                 </option>
                             </select>
-=======
-                        <!-- Loại xe -->
-                        <select v-model="form.model_code" class="form-select" required>
-                            <option :value="null" disabled>Chọn loại xe</option>
-                            <option v-for="model in models" :key="model.code" :value="model.code">
-                                {{ model.name }}
-                            </option>
-                        </select>
->>>>>>> 022a8811203f58a2f62e4c7de2cfc0f35bb1d60d
                         </div>
                         <div class="col-md-4">
                             <label class="form-label">Giá bán</label>
@@ -88,17 +74,13 @@
                         <div class="col-md-4 mb-3">
                             <label class="form-label">Trạng thái xe</label>
                             <select v-model="form.iyoukyo" class="form-select" required>
-<<<<<<< HEAD
                                 <option :value="2">đăng</option>
-=======
->>>>>>> 022a8811203f58a2f62e4c7de2cfc0f35bb1d60d
                                 <option :value="1">Bán</option>
                                 <option :value="0">Không</option>
                             </select>
                         </div>
                     </div>
 
-<<<<<<< HEAD
                     <h4 class="mt-4">Ảnh (tối đa 10 ảnh, kéo thả để sắp xếp)</h4>
 
                     <!-- Dropzone -->
@@ -123,28 +105,11 @@
                                     <input type="text" v-model="element.title" placeholder="Nhập tiêu đề ảnh"
                                         class="form-control form-control-sm mb-2" />
 
-=======
-                    <h4 class="mt-4">Ảnh (cố định 10 ảnh có thể kéo thả)</h4>
-                    <div class="mt-4">
-                        <draggable tag="div" class="grid-image-wrapper"  :list="images"
-                            @end="updateSlots">
-                            <div class="card h-100" v-for="(element, index) in images" :key="index"
-                                >
-                                <img v-if="element.file" :src="element.file
-                                    ? getImageSrc(element)
-                                    : '/images/default.png'
-                                    " class="card-img-top rounded" style="height: 150px; object-fit: fill" />
-                                <img v-else :src="'/images/default.png'" style="height: 150px; object-fit: fill" />
-                                <div class="card-body p-2 text-center">
-                                    <label class="form-label d-block text-center">Ảnh {{ index + 1 }}</label>
-
->>>>>>> 022a8811203f58a2f62e4c7de2cfc0f35bb1d60d
                                     <button v-if="!element.file" class="btn btn-secondary btn-sm w-100 mb-2"
                                         @click.prevent="openFileSelector(index)">
                                         Chọn ảnh
                                     </button>
 
-<<<<<<< HEAD
                                     <!-- ✅ Sửa ref ở đây -->
                                     <input type="file" class="d-none" accept="image/*"
                                         :ref="el => fileInputs[index] = el as HTMLInputElement"
@@ -152,15 +117,6 @@
 
                                     <button v-if="element.file" class="btn btn-danger btn-sm w-100"
                                         @click.prevent="removeImage(index)">
-=======
-                                    <input type="file" class="d-none" accept="image/*" @change="
-                                        onSingleImageSelect($event, index)
-                                        " />
-
-                                    <button v-if="element.file" class="btn btn-danger btn-sm w-100 mt-2" @click.prevent="
-                                        confirmRemoveImage(index)
-                                        ">
->>>>>>> 022a8811203f58a2f62e4c7de2cfc0f35bb1d60d
                                         Xóa ảnh
                                     </button>
                                 </div>
@@ -410,7 +366,6 @@ const submitForm = async () => {
                 "Content-Type": "multipart/form-data",
             },
         });
-<<<<<<< HEAD
 
         alert("Cập nhật thành công");
         router.push("/motorcycles-view");
@@ -419,24 +374,6 @@ const submitForm = async () => {
             ? Object.values(err.response.data.errors).flat().join("\n")
             : "Đã xảy ra lỗi khi cập nhật xe!";
         alert(errorMsg);
-=======
-        router.push("/motorcycles-view");
-    } catch (err: any) {
-        if (err.response?.status === 422 && err.response?.data?.errors) {
-            const validationErrors = err.response.data.errors;
-            let errorMessages: string[] = [];
-
-            for (const field in validationErrors) {
-                if (Array.isArray(validationErrors[field])) {
-                    errorMessages.push(...validationErrors[field]);
-                }
-            }
-
-            alert(errorMessages.join('\n'));
-        } else {
-            alert("Đã có lỗi xảy ra");
-        }
->>>>>>> 022a8811203f58a2f62e4c7de2cfc0f35bb1d60d
     }
 };
 const skipNextModelLoad = ref(false);
@@ -530,10 +467,6 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-<<<<<<< HEAD
-=======
-
->>>>>>> 022a8811203f58a2f62e4c7de2cfc0f35bb1d60d
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
     -webkit-appearance: none;
@@ -544,10 +477,6 @@ input::-webkit-inner-spin-button {
 input[type="number"] {
     -moz-appearance: textfield;
 }
-<<<<<<< HEAD
-
-=======
->>>>>>> 022a8811203f58a2f62e4c7de2cfc0f35bb1d60d
 .grid-image-wrapper {
     display: grid;
     gap: 1rem;

@@ -108,16 +108,8 @@ import { ref, onMounted, watch } from "vue";
 import axios from "axios";
 import { useRoute, useRouter } from "vue-router";
 
-<<<<<<< HEAD
 const route = useRoute();
 const router = useRouter();
-=======
-// Router và Route
-const route = useRoute();
-const router = useRouter();
-
-// Kiểu dữ liệu xe
->>>>>>> 022a8811203f58a2f62e4c7de2cfc0f35bb1d60d
 interface Motorcycle {
   id: number;
   maker_code: string;
@@ -126,10 +118,6 @@ interface Motorcycle {
   color: string;
 }
 
-<<<<<<< HEAD
-=======
-// Danh sách xe và phân trang
->>>>>>> 022a8811203f58a2f62e4c7de2cfc0f35bb1d60d
 const motorcycles = ref<Motorcycle[]>([]);
 const selectedIds = ref<number[]>([]);
 const allSelected = ref(false);
@@ -153,10 +141,6 @@ const form = ref({
   noridasi_kakaku: 0,
 });
 
-<<<<<<< HEAD
-=======
-// Tự động tính giá lên sàn
->>>>>>> 022a8811203f58a2f62e4c7de2cfc0f35bb1d60d
 watch(
   () => form.value.ippan_kakaku,
   (newVal) => {
@@ -239,7 +223,6 @@ const submit = async () => {
     message.value = "Cập nhật thành công!";
     setTimeout(() => router.push("/motorcycles-view"), 1000);
   } catch (err: any) {
-<<<<<<< HEAD
         if (err.response?.status === 422 && err.response?.data?.errors) {
             const validationErrors = err.response.data.errors;
             let errorMessages: string[] = [];
@@ -255,11 +238,6 @@ const submit = async () => {
             alert("Đã có lỗi xảy ra");
         }
     }
-=======
-    console.error("Lỗi cập nhật:", err);
-    alert(err.response?.data?.message || "Lỗi cập nhật");
-  }
->>>>>>> 022a8811203f58a2f62e4c7de2cfc0f35bb1d60d
 };
 
 // Gọi khi khởi tạo
