@@ -4,12 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreMotorCycleRequest;
 use App\Http\Requests\UpdateMotorCycleRequest;
-use App\Models\_Model;
 use App\Models\Maker;
+use App\Models\ModelMotor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Motorcycle;
-use Illuminate\Database\Eloquent\Model;
+use App\Models\MotorcycleLog;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 
@@ -26,7 +26,8 @@ class MotorcycleController extends Controller
             ->filterMaxPrice($request->max_price)
             ->sortByField($request->sort_by, $request->sort_order);
 
-        return $query->paginate($request->per_page ?? 10);
+        $motorcycles = $query->paginate($request->per_page ?? 10);
+        return response()->json($motorcycles);
     }
     public function create()
     {
@@ -37,9 +38,14 @@ class MotorcycleController extends Controller
     {
         $data = $request->all();
         $this->handleMotorcycleImages($data['images'] ?? [], $data);
-        return Motorcycle::create($data);
-    }
 
+        $motorcycle = Motorcycle::create($data);
+
+        return response()->json([
+            'message' => 'Tạo xe thành công',
+            'data' => $motorcycle,
+        ], 201);
+    }
     public function show($id)
     {
         return Motorcycle::findOrFail($id);
@@ -51,6 +57,7 @@ class MotorcycleController extends Controller
         $data = $request->all();
         $this->handleMotorcycleImagesUpdate($data['images'] ?? [], $data, $motorcycle);
         $motorcycle->update($data);
+        $motorcycle->save();
         return $motorcycle;
     }
 
@@ -82,6 +89,8 @@ class MotorcycleController extends Controller
             }
         }
 
+        $copy = $original->replicate();
+        $copy->setCloneOriginId($original->id);
         $copy->save();
 
         return $copy;
@@ -115,13 +124,23 @@ class MotorcycleController extends Controller
                 'color',
                 'iyoukyo',
                 'noridasi_kakaku',
-                'photo1',
             ];
 
+            $fieldLabels = [
+                'maker_code'       => 'Hãng xe',
+                'model_code'       => 'Dòng xe',
+                'ippan_kakaku'     => 'Giá chung',
+                'nensiki'          => 'Năm sản xuất',
+                'soukou'           => 'Số km đã đi',
+                'haikiryo'         => 'Dung tích xi lanh',
+                'color'            => 'Màu sắc',
+                'iyoukyo'          => 'Trạng thái sử dụng',
+                'noridasi_kakaku'  => 'Giá xuất xưởng',
+            ];
             $missingFields = [];
             foreach ($requiredFields as $field) {
                 if (empty($motorcycle->$field)) {
-                    $missingFields[] = $field;
+                    $missingFields[] = $fieldLabels[$field] ?? $field;
                 }
             }
 
@@ -140,30 +159,52 @@ class MotorcycleController extends Controller
             'new_status' => $next
         ]);
     }
+
     public function bulkUpdate(Request $request)
     {
         $data = $request->all();
 
-        $data['fields'] = array_filter($data['fields'], function ($value) {
-            return !is_null($value);
-        });
-        Motorcycle::whereIn('id', $data['ids'])
-            ->update($data['fields']);
+        $fields = array_filter($data['fields'], fn($value) => !is_null($value));
+        $ids = $data['ids'];
+
+
+        $motorcycles = Motorcycle::whereIn('id', $ids)->get();
+
+        foreach ($motorcycles as $index => $motorcycle) {
+            foreach ($fields as $key => $value) {
+                $motorcycle->$key = $value;
+            }
+
+
+            $motorcycle->setBulkUpdate();
+            $motorcycle->save();
+        }
 
         return response()->json([
-            'message' => "Cập nhật  xe thành công.",
+            'message' => "Cập nhật xe thành công.",
         ]);
     }
-
     public function makerSelect()
     {
         return   Maker::all();
     }
-    public function modelSelect()
-    {
-        return _Model::all();
-    }
 
+    public function getModelsByMaker($makerCode)
+    {
+        return ModelMotor::where('maker_code', $makerCode)->get();
+    }
+    public function getListLog(Request $request)
+    {
+        $query = MotorcycleLog::with(['motorcycle', 'user'])
+            ->filterFormDate()
+            ->filterToDate()
+            ->filterStatus()
+            ->filterMotorcycleId()
+            ->sortByField($request->sort_by, $request->sort_order)
+            ->orderBy('created_at', 'desc');
+        $logs = $query->paginate($request->per_page ?? 10);
+        return response()->json($logs);
+    }
 
     protected function handleMotorcycleImages(array $images, array &$updateData, Motorcycle $motorcycle = null): void
     {
@@ -197,6 +238,7 @@ class MotorcycleController extends Controller
 
         foreach ($images as $imageData) {
             $slot = (int) ($imageData['slot'] ?? 0);
+      
             if ($slot < 1 || $slot > 10) continue;
 
             $photoKey = "photo{$slot}";
@@ -224,7 +266,7 @@ class MotorcycleController extends Controller
                     ]);
                 }
 
-              
+
                 if ($file->getSize() >  1024 * 70) {
 
                     throw ValidationException::withMessages([

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Observers;
 
 use App\Models\Motorcycle;
@@ -9,24 +10,36 @@ class MotorcycleObserver
 {
     public function created(Motorcycle $motorcycle)
     {
-        MotorcycleLog::create(attributes: [
-            'motorcycle_id' => $motorcycle->id,
-            'event'         => 'created',
-            'changed_by'    => Auth::id() ?? 'system',
-        ]);
+        $clonedFrom = $motorcycle->getCloneOriginId();
+        if ($clonedFrom) {
+            MotorcycleLog::create([
+                'motorcycle_id' => $motorcycle->id,
+                'event' => 'cloned',
+                'old_value' => $motorcycle->getCloneOriginId(),
+                'new_value' => $motorcycle->id,
+                'changed_by'    => Auth::id() ?? 'system',
+            ]);
+        } else {
+            MotorcycleLog::create(attributes: [
+                'motorcycle_id' => $motorcycle->id,
+                'event'         => 'created',
+                'changed_by'    => Auth::id() ?? 'system',
+            ]);
+        }
     }
-
     public function updated(Motorcycle $motorcycle)
     {
         $changes = $motorcycle->getChanges();
         $original = $motorcycle->getOriginal();
+
+        $eventType = $motorcycle->getBulkUpdate() ? 'bulkUpdate' : 'updated';
 
         foreach ($changes as $field => $newValue) {
             if ($field === 'updated_at') continue;
 
             MotorcycleLog::create([
                 'motorcycle_id' => $motorcycle->id,
-                'event'         => 'updated',
+                'event'         => $eventType,
                 'field'         => $field,
                 'old_value'     => $original[$field] ?? null,
                 'new_value'     => $newValue,
@@ -34,7 +47,6 @@ class MotorcycleObserver
             ]);
         }
     }
-
     public function deleting(Motorcycle $motorcycle)
     {
         MotorcycleLog::create([

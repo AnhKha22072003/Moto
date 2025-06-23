@@ -16,7 +16,7 @@ use Inertia\Inertia;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+     return Inertia::render('MotorcycleList');
 });
 
 Route::get(('/motorcycles-create'), [MotorcycleController::class, 'create'])->name('motorcycles.create');
@@ -34,6 +34,9 @@ Route::get(
         return Inertia::render('BulkUpdate');
     }
 )->name('motorcycles.bulk');
+Route::get('/log-view', function () {
+    return Inertia::render('MotorcycleLogs');
+})->name('motorcycles.logs');
 Route::get('/login', function () {
     return Inertia::render('Login');
 })->name('login');

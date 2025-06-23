@@ -4,10 +4,12 @@ import MotorcycleList from "./pages/MotorcycleList.vue";
 import MotorcycleCreate from "./pages/MotorcycleCreate.vue";
 import MotorcycleUpdate from "./pages/MotorcycleUpdate.vue";
 import BulkUpdate from "./pages/BulkUpdate.vue";
+import MotorcycleLogs from "./pages/MotorcycleLogs.vue";
 
 const routes = [
     { path: "/login", component: Login },
     { path: "/motorcycles-view", component: MotorcycleList },
+    { path: "/", component: MotorcycleList },
     { path: "/motorcycles-create", component: MotorcycleCreate },
     {
         path: "/motorcycles/:id/edit",
@@ -15,6 +17,7 @@ const routes = [
         name: "motorcycle.edit",
     },
     { path: "/bulk-view", component: BulkUpdate },
+    { path: "/log-view", component: MotorcycleLogs}
 ];
 
 export const router = createRouter({

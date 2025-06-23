@@ -10,6 +10,8 @@ class MotorCycle extends Model
 {
     use HasFactory;
     protected $table = 'motorcycle';
+    protected $cloneOriginId;
+    protected $bulkUpdate = false;
     protected $fillable = [
         'searchkey',
         'maker_code',
@@ -51,6 +53,25 @@ class MotorCycle extends Model
     ];
 
     public $timestamps = true;
+    public function getCloneOriginId()
+    {
+        return $this->cloneOriginId;
+    }
+    public function setCloneOriginId($id)
+    {
+        $this->cloneOriginId = $id;
+    }
+
+    public function setBulkUpdate()
+    {
+        $this->bulkUpdate = true;
+    }
+
+    public function getBulkUpdate()
+    {
+        return $this->bulkUpdate;
+    }
+    
     public function user()
     {
         return $this->belongsTo(User::class, 'last_update_id', 'id');
@@ -61,10 +82,13 @@ class MotorCycle extends Model
     }
     public function model()
     {
-        return $this->belongsTo(_Model::class, 'model_code', 'code');
+        return $this->belongsTo(ModelMotor::class, 'model_code', 'code');
     }
-    // scope for searching motorcycles
-     public function scopeFilterMaker(Builder $query, $maker)
+    public function logs()
+    {
+        return $this->hasMany(MotorcycleLog::class, 'motorcycle_id', 'id');
+    }
+    public function scopeFilterMaker(Builder $query, $maker)
     {
         return $query->when($maker, fn($q) => $q->where('maker_code', $maker));
     }
